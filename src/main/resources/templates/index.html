@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Scoopy – Ice cream, delivered cold')}"></head>
+<body>
+<header th:replace="~{layout :: top}"></header>
+<main>
+  <section class="hero">
+    <h1>Cold scoops,<br>at your door in 30 minutes.</h1>
+    <p>Free delivery on orders above ₹299.</p>
+  </section>
+
+  <div class="bar">
+    <div class="chips">
+      <a th:href="@{/(sort=${sort})}" th:classappend="${cat.isEmpty()} ? 'on'">All</a>
+      <a th:each="c : ${categories}" th:href="@{/(cat=${c},sort=${sort})}" th:classappend="${c == cat} ? 'on'" th:text="${c}">Tubs</a>
+    </div>
+    <form th:action="@{/}" method="get" class="sort">
+      <input type="hidden" name="cat" th:value="${cat}"><input type="hidden" name="q" th:value="${q}">
+      <select name="sort" data-autosubmit aria-label="Sort">
+        <option value="popular" th:selected="${sort=='popular'}">Top rated</option>
+        <option value="low" th:selected="${sort=='low'}">Price: low to high</option>
+        <option value="high" th:selected="${sort=='high'}">Price: high to low</option>
+      </select>
+    </form>
+  </div>
+
+  <p class="empty" th:if="${products.isEmpty()}">No flavours match “<span th:text="${q}"></span>”. Try another name or clear the filter.</p>
+
+  <section class="grid">
+    <article class="card" th:each="p : ${products}" th:id="'p' + ${p.id()}">
+      <div class="pic" th:text="${p.emoji()}">🍦</div>
+      <span class="off" th:text="${p.off()} + '% off'">10% off</span>
+      <h3 th:text="${p.name()}">Name</h3>
+      <p class="desc" th:text="${p.desc()}">Desc</p>
+      <div class="meta"><span class="rate" th:text="${p.rating()} + ' ★'">4.5 ★</span></div>
+      <div class="price"><b th:text="'₹' + ${p.price()}">₹99</b> <s th:text="'₹' + ${p.mrp()}">₹120</s></div>
+      <form class="js-cart" th:attr="data-name=${p.name()}" th:action="@{/cart/change/{id}(id=${p.id()})}" method="post">
+        <input type="hidden" name="delta" value="1">
+        <button class="btn">Add to cart</button>
+      </form>
+    </article>
+  </section>
+</main>
+<nav th:replace="~{layout :: bottom}"></nav>
+</body>
+</html>

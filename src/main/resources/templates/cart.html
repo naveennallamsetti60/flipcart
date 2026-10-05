@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Your cart – Scoopy')}"></head>
+<body>
+<header th:replace="~{layout :: top}"></header>
+<main class="narrow">
+  <h2>Your cart</h2>
+  <div th:if="${cart.count() == 0}" class="empty">Your cart is empty. <a th:href="@{/}">Pick a flavour</a></div>
+
+  <div th:if="${cart.count() > 0}" class="cartwrap">
+    <section>
+      <div class="row" th:each="l : ${cart.lines()}">
+        <div class="thumb" th:text="${l.product().emoji()}">🍦</div>
+        <div class="info">
+          <b th:text="${l.product().name()}">Name</b>
+          <span th:text="'₹' + ${l.product().price()}">₹99</span>
+        </div>
+        <form class="qty js-cart" th:action="@{/cart/change/{id}(id=${l.product().id()})}" method="post">
+          <button name="delta" value="-1" aria-label="Remove one">−</button>
+          <span class="qv" th:text="${l.qty()}">1</span>
+          <button name="delta" value="1" aria-label="Add one">+</button>
+        </form>
+        <strong class="sub" th:text="'₹' + ${l.subtotal()}">₹99</strong>
+      </div>
+    </section>
+
+    <aside class="summary">
+      <h3>Price details</h3>
+      <p><span>Items (<span id="s-count" th:text="${cart.count()}">1</span>)</span><span id="s-sub" th:text="'₹' + ${cart.subtotal()}">₹0</span></p>
+      <p><span>Delivery</span><span id="s-del" th:text="${cart.delivery() == 0} ? 'Free' : '₹' + ${cart.delivery()}">Free</span></p>
+      <p class="tot"><span>Total</span><span id="s-tot" th:text="'₹' + ${cart.total()}">₹0</span></p>
+
+      <form th:action="@{/checkout}" method="post" class="addr">
+        <input name="name" placeholder="Full name" required autocomplete="name">
+        <input name="phone" placeholder="Mobile number" required pattern="[0-9]{10}" inputmode="numeric" autocomplete="tel">
+        <textarea name="address" placeholder="Delivery address" required rows="3" autocomplete="street-address"></textarea>
+        <button class="btn big">Place order · pay on delivery</button>
+      </form>
+    </aside>
+  </div>
+</main>
+<nav th:replace="~{layout :: bottom}"></nav>
+</body>
+</html>

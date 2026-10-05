@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Order placed – Scoopy')}"></head>
+<body>
+<header th:replace="~{layout :: top}"></header>
+<main class="narrow done">
+  <div class="big-emoji">🎉</div>
+  <h2>Order placed, <span th:text="${name}">friend</span>!</h2>
+  <p>Order <b th:text="${orderId}">SC1001</b> · pay <b th:text="'₹' + ${total}">₹0</b> on delivery.</p>
+  <p>Your ice cream is on its way in an insulated box.</p>
+  <a class="btn" th:href="@{/}">Keep shopping</a>
+</main>
+<nav th:replace="~{layout :: bottom}"></nav>
+</body>
+</html>
